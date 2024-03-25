@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Denoising</title>
+</head>
+<body>
+    <h1>Image Denoising</h1>
+    <input type="file" id="fileInput">
+    <button onclick="uploadImage()">Upload & Denoise</button>
+    <br>
+    <h2>Original Image</h2>
+    <img id="originalImage" src="#" alt="Original Image" width="540" height="420">
+    <h2>Denoised Image</h2>
+    <img id="denoisedImage" src="#" alt="Denoised Image" width="540" height="420">
+
+    <script>
+        function uploadImage() {
+            const fileInput = document.getElementById('fileInput');
+            const originalImage = document.getElementById('originalImage');
+            const denoisedImage = document.getElementById('denoisedImage');
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                originalImage.src = URL.createObjectURL(fileInput.files[0]);
+                denoisedImage.src = 'data:image/jpeg;base64,' + data.denoised_image;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
